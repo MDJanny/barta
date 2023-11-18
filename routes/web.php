@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,16 +18,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', fn () => view('home'));
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::get('/profile/edit', [ProfileController::class, 'edit']);
     Route::put('/profile/edit', [ProfileController::class, 'update']);
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::get('/logout', [LoginController::class, 'logout']);
+
+    Route::get('/', [PostController::class, 'index']);
+    Route::post('/post/create', [PostController::class, 'store']);
+    Route::get('/post/{uuid}', [PostController::class, 'show']);
+    Route::get('/post/{uuid}/edit', [PostController::class, 'edit']);
+    Route::put('/post/{uuid}/edit', [PostController::class, 'update']);
+    Route::delete('/post/{uuid}/delete', [PostController::class, 'destroy']);
 });
 
 Route::group(['middleware' => ['guest']], function () {
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/login', [AuthController::class, 'postlogin']);
-    Route::get('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/register', [AuthController::class, 'postregister']);
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+
+    Route::get('/register', [RegisterController::class, 'index'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
 });

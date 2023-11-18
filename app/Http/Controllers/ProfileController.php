@@ -24,9 +24,9 @@ class ProfileController extends Controller
         $userId = Auth::user()->id;
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $userId,
-            'password' => 'nullable|string|min:6',
+            'name' => 'required|string|min:3|max:25',
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'password' => 'nullable|string|min:6|max:20',
             'bio' => 'nullable|string|max:255',
         ]);
 
@@ -39,6 +39,6 @@ class ProfileController extends Controller
 
         DB::table('users')->where('id', $userId)->update($validated);
 
-        return redirect('/profile')->with('success', 'Profile updated successfully!');
+        return redirect('/profile')->with('message', 'Profile updated successfully!');
     }
 }
