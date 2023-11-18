@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
+@section('title', 'Edit Profile')
 @section('content')
 <main class="container max-w-xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
     <!-- Profile Edit Form -->
-
     <form method="POST" action="">
         @csrf
         @method('PUT')
@@ -16,6 +16,10 @@
                     This information will be displayed publicly so be careful what you
                     share.
                 </p>
+
+                @if ($errors->any())
+                <x-form-errors />
+                @endif
 
                 <div class="mt-10 border-b border-gray-900/10 pb-12">
                     <!--              <div class="col-span-full mt-10 pb-10">-->

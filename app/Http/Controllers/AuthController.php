@@ -36,10 +36,10 @@ class AuthController extends Controller
     public function postregister(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|min:3|max:35',
-            'username' => 'required|min:3|max:35|unique:users',
-            'email' => 'required|unique:users',
-            'password' => 'required|min:6|max:20|confirmed',
+            'name' => 'required|string|min:3|max:25',
+            'username' => 'required|min:3|max:15|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:6|max:20|confirmed',
         ]);
 
         $user = new User();

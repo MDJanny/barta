@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
+    <title>Register - Barta</title>
     <style>
     * {
         font-family: 'Inter', sans-serif;
@@ -28,14 +28,11 @@
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+
             @if ($errors->any())
-            @foreach ($errors->all() as $error)
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-3 rounded relative" role="alert">
-                <strong class="font-bold">Error!</strong>
-                <span class="block sm:inline">{{ $error }}</span>
-            </div>
-            @endforeach
+            <x-form-errors />
             @endif
+
             <form class="space-y-6" action="/register" method="POST">
                 @csrf
                 <!-- Name -->

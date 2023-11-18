@@ -1,16 +1,11 @@
 @extends('layouts.app')
 
+@section('title', 'Profile')
 @section('content')
 <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
     <!-- Cover Container -->
     <section
         class="bg-white border-2 p-8 border-gray-800 rounded-xl min-h-[400px] space-y-8 flex items-center flex-col justify-center">
-
-        @if(Session::has('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ Session::get('success') }}</span>
-        </div>
-        @endif
 
         <!-- Profile Info -->
         <div class="flex gap-4 justify-center flex-col text-center items-center">
