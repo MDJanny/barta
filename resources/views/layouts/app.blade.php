@@ -98,7 +98,9 @@
                                     class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full" src="https://i.pravatar.cc/100" alt="" />
+                                    <img class="h-8 w-8 rounded-full"
+                                        src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random"
+                                        alt="User Avatar" />
                                 </button>
                             </div>
 
@@ -111,8 +113,13 @@
                                     role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
                                 <a href="/profile/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     role="menuitem" tabindex="-1" id="user-menu-item-1">Edit Profile</a>
-                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem" tabindex="-1" id="user-menu-item-2">Logout</a>
+                                <form method="POST" action="/logout">
+                                    @csrf
+                                    <button
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem" tabindex="-1" id="user-menu-item-2"
+                                        onclick="return confirm('Are you sure you want to sign out?')">Sign out</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -156,7 +163,9 @@
                 <div class="border-t border-gray-200 pt-4 pb-3">
                     <div class="flex items-center px-4">
                         <div class="flex-shrink-0">
-                            <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/100" alt="" />
+                            <img class="h-10 w-10 rounded-full"
+                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random"
+                                alt="User Avatar" />
                         </div>
                         <div class="ml-3">
                             <div class="text-base font-medium text-gray-800">

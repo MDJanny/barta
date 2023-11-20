@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -16,24 +16,22 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', [PostController::class, 'index']);
-    Route::get('/profile', [ProfileController::class, 'index']);
-    Route::get('/profile/edit', [ProfileController::class, 'edit']);
-    Route::put('/profile/edit', [ProfileController::class, 'update']);
-    Route::get('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{username?}', [ProfileController::class, 'index'])->name('profile.index');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Route::get('/post/create', [PostController::class, 'create']);
-    Route::post('/post/create', [PostController::class, 'store']);
+    Route::get('/', [PostController::class, 'index']);
+    Route::post('/post', [PostController::class, 'store']);
     Route::get('/post/{uuid}', [PostController::class, 'show']);
     Route::get('/post/{uuid}/edit', [PostController::class, 'edit']);
-    Route::put('/post/{uuid}/edit', [PostController::class, 'update']);
-    Route::delete('/post/{uuid}/delete', [PostController::class, 'destroy']);
+    Route::put('/post/{uuid}', [PostController::class, 'update']);
+    Route::delete('/post/{uuid}', [PostController::class, 'destroy']);
+
+    Route::post('/post/{postUuid}/comment', [CommentController::class, 'store']);
+    Route::get('/post/{postUuid}/comment/{commentUuid}/edit', [CommentController::class, 'edit']);
+    Route::put('/post/{postUuid}/comment/{commentUuid}', [CommentController::class, 'update']);
+    Route::delete('/post/{postUuid}/comment/{commentUuid}', [CommentController::class, 'destroy']);
 });
 
-Route::group(['middleware' => ['guest']], function () {
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/login', [AuthController::class, 'postlogin']);
-    Route::get('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/register', [AuthController::class, 'postregister']);
-});
+require __DIR__ . '/auth.php';

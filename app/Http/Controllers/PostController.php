@@ -13,9 +13,12 @@ class PostController extends Controller
      */
     public function index()
     {
+        // Get all posts along with the author's name, username, and comment count
         $posts = DB::table('posts')
             ->join('users', 'posts.user_id', '=', 'users.id')
-            ->select('posts.*', 'users.name as author_name', 'users.username as author_username')
+            ->leftJoin('comments', 'posts.id', '=', 'comments.post_id')
+            ->select('posts.*', 'users.name as author_name', 'users.username as author_username', DB::raw('count(comments.id) as comment_count'))
+            ->groupBy('posts.id')
             ->orderBy('posts.created_at', 'desc')
             ->get();
 
@@ -74,8 +77,16 @@ class PostController extends Controller
             abort(404);
         }
 
-        return view('post', [
+        $comments = DB::table('comments')
+            ->join('users', 'comments.user_id', '=', 'users.id')
+            ->select('comments.*', 'users.name as author_name', 'users.username as author_username')
+            ->where('comments.post_id', $post->id)
+            ->orderBy('comments.created_at', 'desc')
+            ->get();
+
+        return view('post.index', [
             'post' => $post,
+            'comments' => $comments,
         ]);
     }
 
@@ -96,7 +107,7 @@ class PostController extends Controller
             abort(403);
         }
 
-        return view('edit-post', [
+        return view('post.edit', [
             'post' => $post,
         ]);
     }
@@ -153,6 +164,10 @@ class PostController extends Controller
             ->where('uuid', $uuid)
             ->delete();
 
-        return redirect('/')->with('message', 'Post deleted successfully!');
+        if (request()->ref == 'post/' . $uuid) {
+            return redirect('/')->with('message', 'Post deleted successfully!');
+        } else {
+            return back()->with('message', 'Post deleted successfully!');
+        }
     }
 }
