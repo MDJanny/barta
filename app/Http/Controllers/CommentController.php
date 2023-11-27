@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -34,15 +35,13 @@ class CommentController extends Controller
         ]);
 
         $userId = auth()->user()->id;
-        $postId = DB::table('posts')->where('uuid', $postUuid)->value('id');
+        $postId = Post::where('uuid', $postUuid)->firstOrFail()->id;
 
-        DB::table('comments')->insert([
+        Comment::create([
             'user_id' => $userId,
             'post_id' => $postId,
             'uuid' => Str::uuid(),
             'body' => $validated['comment'],
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return back()->with('message', 'Comment created successfully!');
@@ -62,11 +61,7 @@ class CommentController extends Controller
     public function edit(string $postUuid, string $commentUuid)
     {
         // Check if the comment exists
-        $comment = DB::table('comments')->where('uuid', $commentUuid)->first();
-
-        if (!$comment) {
-            abort(404);
-        }
+        $comment = Comment::where('uuid', $commentUuid)->firstOrFail();
 
         // Check if the user is the owner of the comment
         if ($comment->user_id !== auth()->user()->id) {
@@ -89,23 +84,18 @@ class CommentController extends Controller
         ]);
 
         // Check if the comment exists
-        $comment = DB::table('comments')->where('uuid', $commentUuid)->first();
-
-        if (!$comment) {
-            abort(404);
-        }
+        $comment = Comment::where('uuid', $commentUuid)->firstOrFail();
 
         // Check if the user is the owner of the comment
         if ($comment->user_id !== auth()->user()->id) {
             abort(403);
         }
 
-        DB::table('comments')->where('uuid', $commentUuid)->update([
+        $comment->update([
             'body' => $validated['comment'],
-            'updated_at' => now(),
         ]);
 
-        return redirect('/post/' . $postUuid)->with('message', 'Comment updated successfully!');
+        return redirect('/post/' . $postUuid . '#comments')->with('message', 'Comment updated successfully!');
     }
 
     /**
@@ -114,18 +104,14 @@ class CommentController extends Controller
     public function destroy(string $postUuid, string $commentUuid)
     {
         // Check if the comment exists
-        $comment = DB::table('comments')->where('uuid', $commentUuid)->first();
-
-        if (!$comment) {
-            abort(404);
-        }
+        $comment = Comment::where('uuid', $commentUuid)->firstOrFail();
 
         // Check if the user is the owner of the comment
         if ($comment->user_id !== auth()->user()->id) {
             abort(403);
         }
 
-        DB::table('comments')->where('uuid', $commentUuid)->delete();
+        $comment->delete();
 
         return back()->with('message', 'Comment deleted successfully!');
     }

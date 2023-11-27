@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -14,12 +14,9 @@ class PostController extends Controller
     public function index()
     {
         // Get all posts along with the author's name, username, and comment count
-        $posts = DB::table('posts')
-            ->join('users', 'posts.user_id', '=', 'users.id')
-            ->leftJoin('comments', 'posts.id', '=', 'comments.post_id')
-            ->select('posts.*', 'users.name as author_name', 'users.username as author_username', DB::raw('count(comments.id) as comment_count'))
-            ->groupBy('posts.id')
-            ->orderBy('posts.created_at', 'desc')
+        $posts = Post::with('user')
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('home', [
@@ -46,13 +43,16 @@ class PostController extends Controller
 
         $userId = auth()->user()->id;
 
-        DB::table('posts')->insert([
+        $post = Post::create([
             'user_id' => $userId,
             'uuid' => Str::uuid(),
             'body' => $validated['post'],
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
+
+        if ($request->hasFile('image')) {
+            $post->addMediaFromRequest('image')
+                ->toMediaCollection('post-images');
+        }
 
         return back()->with('message', 'Post created successfully!');
     }
@@ -63,30 +63,15 @@ class PostController extends Controller
     public function show(string $uuid)
     {
         // Increment view count
-        DB::table('posts')
-            ->where('uuid', $uuid)
+        Post::where('uuid', $uuid)
             ->increment('views');
 
-        $post = DB::table('posts')
-            ->join('users', 'posts.user_id', '=', 'users.id')
-            ->select('posts.*', 'users.name as author_name', 'users.username as author_username')
-            ->where('posts.uuid', $uuid)
-            ->first();
-
-        if (!$post) {
-            abort(404);
-        }
-
-        $comments = DB::table('comments')
-            ->join('users', 'comments.user_id', '=', 'users.id')
-            ->select('comments.*', 'users.name as author_name', 'users.username as author_username')
-            ->where('comments.post_id', $post->id)
-            ->orderBy('comments.created_at', 'desc')
-            ->get();
+        $post = Post::with('user', 'comments.user')
+            ->where('uuid', $uuid)
+            ->firstOrFail();
 
         return view('post.index', [
             'post' => $post,
-            'comments' => $comments,
         ]);
     }
 
@@ -95,15 +80,10 @@ class PostController extends Controller
      */
     public function edit(string $uuid)
     {
-        $post = DB::table('posts')
-            ->where('uuid', $uuid)
-            ->first();
+        $post = Post::where('uuid', $uuid)
+            ->firstOrFail();
 
-        if (!$post) {
-            abort(404);
-        }
-
-        if (auth()->user()->id != $post->user_id) {
+        if (auth()->user()->id != $post->user->id) {
             abort(403);
         }
 
@@ -117,15 +97,10 @@ class PostController extends Controller
      */
     public function update(Request $request, string $uuid)
     {
-        $post = DB::table('posts')
-            ->where('uuid', $uuid)
-            ->first();
+        $post = Post::where('uuid', $uuid)
+            ->firstOrFail();
 
-        if (!$post) {
-            abort(404);
-        }
-
-        if (auth()->user()->id != $post->user_id) {
+        if (auth()->user()->id != $post->user->id) {
             abort(403);
         }
 
@@ -133,12 +108,8 @@ class PostController extends Controller
             'post' => 'required',
         ]);
 
-        DB::table('posts')
-            ->where('uuid', $uuid)
-            ->update([
-                'body' => $validated['post'],
-                'updated_at' => now(),
-            ]);
+        $post->body = $validated['post'];
+        $post->save();
 
         return redirect('/post/' . $uuid)->with('message', 'Post updated successfully!');
     }
@@ -148,21 +119,14 @@ class PostController extends Controller
      */
     public function destroy(string $uuid)
     {
-        $post = DB::table('posts')
-            ->where('uuid', $uuid)
-            ->first();
+        $post = Post::where('uuid', $uuid)
+            ->firstOrFail();
 
-        if (!$post) {
-            abort(404);
-        }
-
-        if (auth()->user()->id != $post->user_id) {
+        if (auth()->user()->id != $post->user->id) {
             abort(403);
         }
 
-        DB::table('posts')
-            ->where('uuid', $uuid)
-            ->delete();
+        $post->delete();
 
         if (request()->ref == 'post/' . $uuid) {
             return redirect('/')->with('message', 'Post deleted successfully!');

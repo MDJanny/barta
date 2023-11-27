@@ -44,6 +44,14 @@
                                 class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">People</a>
                         </div> -->
                     </div>
+                    <!-- Search input -->
+                    <form action="/profile/search" method="GET" class="flex items-center">
+                        <input type="text" name="query" placeholder="Search..."
+                            class="border-2 border-gray-300 bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none"
+                            value="{{ request()->input('query') }}" required />
+                    </form>
+                    <!-- /Search input -->
+
                     <div class="hidden sm:ml-6 sm:flex gap-2 sm:items-center">
                         <!-- This Button Should Be Hidden on Mobile Devices -->
                         <!--              <button-->
@@ -98,8 +106,7 @@
                                     class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full"
-                                        src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random"
+                                    <img class="h-8 w-8 rounded-full" src="{{ Auth::user()->getAvatarUrl(true) }}"
                                         alt="User Avatar" />
                                 </button>
                             </div>
@@ -163,9 +170,7 @@
                 <div class="border-t border-gray-200 pt-4 pb-3">
                     <div class="flex items-center px-4">
                         <div class="flex-shrink-0">
-                            <img class="h-10 w-10 rounded-full"
-                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random"
-                                alt="User Avatar" />
+                            <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->getAvatarUrl(true) }}" alt="" />
                         </div>
                         <div class="ml-3">
                             <div class="text-base font-medium text-gray-800">
@@ -194,11 +199,13 @@
             </div>
         </nav>
     </header>
-    @yield('content')
+    <main class="container max-w-xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
+        @yield('content')
+    </main>
     <footer class="shadow bg-black mt-10">
         <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
             <div class="sm:flex sm:items-center sm:justify-between">
-                <a href="https://github.com/alnahian2003" class="flex items-center mb-4 sm:mb-0">
+                <a href="/" class="flex items-center mb-4 sm:mb-0">
                     <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Barta</span>
                 </a>
                 <ul class="flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 text-gray-100">
@@ -218,7 +225,7 @@
             </div>
             <hr class="my-6 sm:mx-auto border-gray-700 lg:my-8" />
             <span class="block text-sm sm:text-center text-gray-200">© {{ date('Y') }}
-                <a href="https://github.com/alnahian2003" class="hover:underline">Barta</a>. All Rights Reserved.</span>
+                <a href="/" class="hover:underline">Barta</a>. All Rights Reserved.</span>
         </div>
     </footer>
 

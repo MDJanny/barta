@@ -1,4 +1,4 @@
-@props(['post', 'commentCount'])
+@props(['post'])
 
 <!-- Barta Card -->
 <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6">
@@ -7,32 +7,30 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <!-- User Avatar -->
-                <!--                <div class="flex-shrink-0">-->
-                <!--                  <img-->
-                <!--                    class="h-10 w-10 rounded-full object-cover"-->
-                <!--                    src="https://avatars.githubusercontent.com/u/61485238"-->
-                <!--                    alt="Al Nahian" />-->
-                <!--                </div>-->
+                <div class="flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full object-cover" src="{{ $post->user->getAvatarUrl(true) }}"
+                        alt="" />
+                </div>
                 <!-- /User Avatar -->
 
                 <!-- User Info -->
                 <div class="text-gray-900 flex flex-col min-w-0 flex-1">
                     @if(Request::is('profile') || Request::is('profile/*'))
                     <span class="font-semibold line-clamp-1">
-                        {{ $post->author_name }}
+                        {{ $post->user->name }}
                     </span>
 
                     <span class="text-sm text-gray-500 line-clamp-1">
-                        {{ '@' . $post->author_username }}
+                        {{ '@' . $post->user->username }}
                     </span>
                     @else
-                    <a href="/profile/{{ $post->author_username }}" class="hover:underline font-semibold line-clamp-1">
-                        {{ $post->author_name }}
+                    <a href="/profile/{{ $post->user->username }}" class="hover:underline font-semibold line-clamp-1">
+                        {{ $post->user->name }}
                     </a>
 
-                    <a href="/profile/{{ $post->author_username }}"
+                    <a href="/profile/{{ $post->user->username }}"
                         class="hover:underline text-sm text-gray-500 line-clamp-1">
-                        {{ '@' . $post->author_username }}
+                        {{ '@' . $post->user->username }}
                     </a>
                     @endif
                 </div>
@@ -82,14 +80,24 @@
 
     <!-- Content -->
     @if (Request::is('post/*'))
-    <div class="py-4 text-gray-700 font-normal">
+    <div class="py-4 text-gray-700 font-normal space-y-2">
+        @if ($post->hasMedia('post-images'))
+        <img src="{{ $post->getFirstMediaUrl('post-images') }}"
+            class="min-h-auto w-full rounded-lg object-cover max-h-64 md:max-h-72" alt="" />
+        @endif
+
         <p>
             {!! nl2br(e($post->body)) !!}
         </p>
     </div>
     @else
     <a href="/post/{{ $post->uuid }}">
-        <div class="py-4 text-gray-700 font-normal">
+        <div class="py-4 text-gray-700 font-normal space-y-2">
+            @if ($post->hasMedia('post-images'))
+            <img src="{{ $post->getFirstMediaUrl('post-images') }}"
+                class="min-h-auto w-full rounded-lg object-cover max-h-64 md:max-h-72" alt="" />
+            @endif
+
             <p>
                 {!! nl2br(e((Str::limit($post->body, 190)))) !!}
 
@@ -106,7 +114,7 @@
         <span class="">{{ \Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
         @if(Request::is('post/*'))
         <span class="">•</span>
-        <span>{{ $commentCount }} comments</span>
+        <span>{{ $post->comments_count ?? $post->comments->count() }} comments</span>
         @endif
         <span class="">•</span>
         <span>{{ $post->views }} views</span>
@@ -120,14 +128,12 @@
         @csrf
         <!-- Create Comment Card Top -->
         <div>
-            <div class="flex items-start /space-x-3/">
+            <div class="flex items-start space-x-3">
                 <!-- User Avatar -->
-                <!-- <div class="flex-shrink-0">-->
-                <!--              <img-->
-                <!--                class="h-10 w-10 rounded-full object-cover"-->
-                <!--                src="https://avatars.githubusercontent.com/u/831997"-->
-                <!--                alt="Ahmed Shamim" />-->
-                <!--            </div> -->
+                <div class="flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full object-cover" src="{{ Auth::user()->getAvatarUrl(true) }}"
+                        alt="" />
+                </div>
                 <!-- /User Avatar -->
 
                 <!-- Auto Resizing Comment Box -->
@@ -176,7 +182,7 @@
                             d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
                     </svg>
 
-                    <p>{{ $post->comment_count }}</p>
+                    <p>{{ $post->comments_count ?? $post->comments->count() }}</p>
                 </a>
                 <!-- /Comment Button -->
             </div>
