@@ -10,14 +10,8 @@
 <x-add-post-form />
 
 <!-- Newsfeed -->
-<section id="newsfeed" class="space-y-6">
-    @if($posts->count() > 0)
-    @foreach($posts as $post)
-    <x-post-card :post="$post" />
-    @endforeach
-    @else
-    <p class="text-center mt-14 text-gray-500">No posts yet!</p>
-    @endif
+<section id="newsfeed">
+    <livewire:posts />
 
     <!-- Barta Card With Image -->
     <!--        <article-->
