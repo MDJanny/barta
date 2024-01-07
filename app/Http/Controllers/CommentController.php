@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentAdded;
 use App\Models\Comment;
 use App\Models\Post;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CommentController extends Controller
 {
@@ -37,12 +38,16 @@ class CommentController extends Controller
         $userId = auth()->user()->id;
         $postId = Post::where('uuid', $postUuid)->firstOrFail()->id;
 
-        Comment::create([
+        $comment = Comment::create([
             'user_id' => $userId,
             'post_id' => $postId,
             'uuid' => Str::uuid(),
             'body' => $validated['comment'],
         ]);
+
+        if ($comment->post->user_id !== $userId) {
+            CommentAdded::dispatch($comment);
+        }
 
         return back()->with('message', 'Comment created successfully!');
     }
@@ -95,7 +100,7 @@ class CommentController extends Controller
             'body' => $validated['comment'],
         ]);
 
-        return redirect('/post/' . $postUuid . '#comments')->with('message', 'Comment updated successfully!');
+        return redirect('/post/'.$postUuid.'#comments')->with('message', 'Comment updated successfully!');
     }
 
     /**

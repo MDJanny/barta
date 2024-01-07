@@ -22,6 +22,11 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -31,5 +36,24 @@ class Post extends Model implements HasMedia
     {
         $this->addMediaCollection('post-images')
             ->singleFile();
+    }
+
+    public function isLikedByUser(User $user)
+    {
+        return $this->likes()->where('user_id', $user->id)->count() > 0;
+    }
+
+    public function like(User $user): Like
+    {
+        $like = $this->likes()->create([
+            'user_id' => $user->id,
+        ]);
+
+        return $like;
+    }
+
+    public function unlike(User $user)
+    {
+        $this->likes()->where('user_id', $user->id)->delete();
     }
 }

@@ -29,7 +29,7 @@
     <div class="flex flex-row gap-16 justify-center text-center items-center">
         <!-- Total Posts Count -->
         <div class="flex flex-col justify-center items-center">
-            <h4 class="sm:text-xl font-bold">{{ $posts->count() }}</h4>
+            <h4 class="sm:text-xl font-bold">{{ $totalPostsCount }}</h4>
             <p class="text-gray-600">Posts</p>
         </div>
 
@@ -63,14 +63,6 @@
 @endif
 
 <!-- User Specific Posts Feed -->
-@if($posts->count() > 0)
-@foreach($posts as $post)
-<x-post-card :post="$post" />
-@endforeach
-@else
-<div class="flex items-center justify-center">
-    <p class="text-gray-700 mt-14 font-normal">No posts yet!</p>
-</div>
-@endif
+<livewire:post-list :user="$user" />
 <!-- User Specific Posts Feed -->
 @endsection

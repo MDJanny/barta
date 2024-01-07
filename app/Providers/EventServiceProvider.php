@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\CommentAdded;
+use App\Events\PostLiked;
+use App\Listeners\SendCommentAddedNotification;
+use App\Listeners\SendPostLikedNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        CommentAdded::class => [
+            SendCommentAddedNotification::class,
+        ],
+        PostLiked::class => [
+            SendPostLikedNotification::class,
         ],
     ];
 

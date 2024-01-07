@@ -8,8 +8,7 @@
 </h1>
 
 <!-- Barta Create Post Card -->
-<form method="POST" action="/post/{{ $post->uuid }}" enctype="multipart/form-data"
-    class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3">
+<form method="POST" action="/post/{{ $post->uuid }}" enctype="multipart/form-data" class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3">
     @csrf
     @method('PUT')
 
@@ -18,8 +17,7 @@
         <div class="flex items-start /space-x-3/">
             <!-- Content -->
             <div class="text-gray-700 font-normal w-full">
-                <textarea class="block w-full p-2 pt-2 text-gray-900 border rounded-lg focus:ring-0 focus:ring-offset-0"
-                    name="post" rows="8" required>{{ $post->body }}</textarea>
+                <textarea class="block w-full p-2 pt-2 text-gray-900 border rounded-lg focus:ring-0 focus:ring-offset-0" name="post" rows="8" required>{{ $post->body }}</textarea>
             </div>
         </div>
     </div>
@@ -100,8 +98,7 @@
 
             <div>
                 <!-- Post Button -->
-                <button type="submit"
-                    class="mt-2 flex gap-2 text-xs items-center rounded-full px-4 py-2 font-semibold bg-gray-800 hover:bg-black text-white">
+                <button type="submit" class="mt-2 flex gap-2 text-xs items-center rounded-full px-4 py-2 font-semibold bg-gray-800 hover:bg-black text-white">
                     Update Post
                 </button>
                 <!-- /Post Button -->

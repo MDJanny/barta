@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia;
+    use HasApiTokens, HasFactory, InteractsWithMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,7 +59,7 @@ class User extends Authenticatable implements HasMedia
             ->singleFile();
     }
 
-    public function registerMediaConversions(?Media $media = null): void
+    public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->width(100)
@@ -72,6 +72,6 @@ class User extends Authenticatable implements HasMedia
             return $this->getFirstMediaUrl('user-avatars', $thumb ? 'thumb' : '');
         }
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=random';
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=random';
     }
 }

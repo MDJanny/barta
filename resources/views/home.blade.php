@@ -11,7 +11,7 @@
 
 <!-- Newsfeed -->
 <section id="newsfeed">
-    <livewire:posts />
+    <livewire:post-list />
 
     <!-- Barta Card With Image -->
     <!--        <article-->

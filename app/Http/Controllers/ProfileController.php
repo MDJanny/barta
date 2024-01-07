@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Comment;
 use App\Models\Post;
-use Illuminate\View\View;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\Comment;
-use App\Models\User;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
@@ -23,17 +23,12 @@ class ProfileController extends Controller
             $user = User::where('username', $username)->firstOrFail();
         }
 
-        $posts = Post::with('user')
-            ->withCount('comments')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $totalPostsCount = Post::where('user_id', $user->id)->count();
         $totalCommentsCount = Comment::where('user_id', $user->id)->count();
 
         return view('profile.index', [
             'user' => $user,
-            'posts' => $posts,
+            'totalPostsCount' => $totalPostsCount,
             'totalCommentsCount' => $totalCommentsCount,
         ]);
     }
@@ -71,7 +66,6 @@ class ProfileController extends Controller
             $user->addMediaFromRequest('avatar')->toMediaCollection('user-avatars');
         }
 
-
         return Redirect::route('profile.index')->with('message', 'Profile updated successfully!');
     }
 
@@ -104,13 +98,13 @@ class ProfileController extends Controller
     {
         $query = request('query');
 
-        if (!$query) {
+        if (! $query) {
             return redirect('/');
         }
 
-        $users = User::where('name', 'like', '%' . $query . '%')
-            ->orWhere('username', 'like', '%' . $query . '%')
-            ->orWhere('email', 'like', '%' . $query . '%')
+        $users = User::where('name', 'like', '%'.$query.'%')
+            ->orWhere('username', 'like', '%'.$query.'%')
+            ->orWhere('email', 'like', '%'.$query.'%')
             ->get();
 
         return view('profile.search', [

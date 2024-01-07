@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- AlpineJS CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>@yield('title') - Barta</title>
+    @vite('resources/css/app.css')
+    @livewireStyles
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -58,25 +56,7 @@
                         <!--                Create Post-->
                         <!--              </button>-->
 
-                        <!--              <button-->
-                        <!--                type="button"-->
-                        <!--                class="rounded-full bg-white p-2 text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">-->
-                        <!--                <span class="sr-only">View notifications</span>-->
-                        <!--                &lt;!&ndash; Heroicon name: outline/bell &ndash;&gt;-->
-                        <!--                <svg-->
-                        <!--                  class="h-6 w-6"-->
-                        <!--                  xmlns="http://www.w3.org/2000/svg"-->
-                        <!--                  fill="none"-->
-                        <!--                  viewBox="0 0 24 24"-->
-                        <!--                  stroke-width="1.5"-->
-                        <!--                  stroke="currentColor"-->
-                        <!--                  aria-hidden="true">-->
-                        <!--                  <path-->
-                        <!--                    stroke-linecap="round"-->
-                        <!--                    stroke-linejoin="round"-->
-                        <!--                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />-->
-                        <!--                </svg>-->
-                        <!--              </button>-->
+                        <livewire:notifications />
 
                         <!--              <button-->
                         <!--                type="button"-->
@@ -107,7 +87,7 @@
                             </div>
 
                             <!-- Dropdown menu -->
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                            <div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                                 <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
                                 <a href="/profile/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-1">Edit Profile</a>
                                 <form method="POST" action="/logout">
@@ -212,6 +192,9 @@
         <p>{{ Session::get('message') }}</p>
     </div>
     @endif
+
+    @vite('resources/js/app.js')
+    @livewireScripts
 </body>
 
 </html>

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +33,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/post/{postUuid}/comment/{commentUuid}/edit', [CommentController::class, 'edit']);
     Route::put('/post/{postUuid}/comment/{commentUuid}', [CommentController::class, 'update']);
     Route::delete('/post/{postUuid}/comment/{commentUuid}', [CommentController::class, 'destroy']);
+
+    Route::get('/notifications', function () {
+        return view('all-notifications', [
+            'notifications' => auth()->user()->notifications,
+        ]);
+    })->name('notifications');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

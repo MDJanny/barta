@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -111,7 +111,7 @@ class PostController extends Controller
         $post->body = $validated['post'];
         $post->save();
 
-        return redirect('/post/' . $uuid)->with('message', 'Post updated successfully!');
+        return redirect('/post/'.$uuid)->with('message', 'Post updated successfully!');
     }
 
     /**
@@ -128,7 +128,7 @@ class PostController extends Controller
 
         $post->delete();
 
-        if (request()->ref == 'post/' . $uuid) {
+        if (request()->ref == 'post/'.$uuid) {
             return redirect('/')->with('message', 'Post deleted successfully!');
         } else {
             return back()->with('message', 'Post deleted successfully!');
